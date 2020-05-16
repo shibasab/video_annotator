@@ -39,11 +39,12 @@ class App(tk.Frame):
         self.show_img()
 
 
-root = tk.Tk()
-root.geometry('640x320')
-root.resizable(width=10, height=10)
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.geometry('640x320')
+    root.resizable(width=10, height=10)
 
-video_frame = VideoFrame("./video/0.mp4")
-app = App(video_frame, master=root)
+    video_frame = VideoFrame("./video/0.mp4")
+    app = App(video_frame, master=root)
 
-app.mainloop()
+    app.mainloop()
