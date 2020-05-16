@@ -1,68 +1,49 @@
-from PIL import Image, ImageTk
+from load_image import VideoFrame
 
-import cv2
-import numpy as np
 import tkinter as tk
-from tkinter import ttk
 
 
-class VideoFrame:
-    def __init__(self, vid_path):
-        self.idx = 0
-        self.imgs = self.load(vid_path)
-        self.shape = self.imgs[0].shape
+class App(tk.Frame):
+    def __init__(self, video_frame, master=None):
+        super().__init__(master)
+        self.master = master
+        self.video_frame = video_frame
+        self.pack()
+        self.create_widgets()
 
-    def get_tkframe(self):
-        img = self.imgs[self.idx]
-        img_pil = Image.fromarray(img)
-        img_tk = ImageTk.PhotoImage(img_pil)
-        return img_tk
+    def create_widgets(self):
+        self.canvas = tk.Canvas(
+            self.master,
+            width=self.video_frame.shape[0],
+            height=self.video_frame.shape[1])
 
-    def count(self):
-        self.idx += 1
+        self.canvas.pack()
+        self.show_img()
 
-    def load(self, vid_path):
-        imgs = []
+        self.btn = tk.Button(
+            self,
+            text="next",
+            command=lambda: self.change_img(30))
+        self.btn.pack(anchor=tk.NW, side="top")
 
-        cap = cv2.VideoCapture(vid_path)
-        if not cap.isOpened():
-            print("Could not open video.")
-            return
+    def show_img(self):
+        self.img = self.video_frame.get_tkframe()
+        self.canvas.create_image(0, 0, anchor="nw", image=self.img)
 
-        while True:
-            ret, frame = cap.read()
+    def change_img(self, n=10):
+        self.video_frame.idx += n
 
-            if ret:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                imgs.append(frame)
+        if self.video_frame.idx > len(self.video_frame.imgs):
+            self.video_frame.idx = 0
 
-            else:
-                break
-
-        return imgs
+        self.show_img()
 
 
 root = tk.Tk()
-root.title("test")
 root.geometry('640x320')
 root.resizable(width=10, height=10)
 
 video_frame = VideoFrame("./video/0.mp4")
+app = App(video_frame, master=root)
 
-frame1 = ttk.Frame(root, padding=5)
-# frame1.grid()
-
-button1 = ttk.Button(
-    frame1,
-    text="next",
-    command=video_frame.count()
-)
-# button1.grid(row=2, column=1, columnspan=2)
-
-canvas = tk.Canvas(
-    root, width=video_frame.shape[0], height=video_frame.shape[1])
-canvas.pack()
-img = video_frame.get_tkframe()
-canvas.create_image(0, 0, anchor="nw", image=img)
-
-root.mainloop()
+app.mainloop()
