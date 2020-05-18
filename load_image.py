@@ -5,6 +5,7 @@ from PIL import Image, ImageTk
 class VideoFrame:
     def __init__(self, vid_path):
         self.idx = 0
+        self.vid_path = vid_path
         self.imgs = self.load(vid_path)
         self.shape = self.imgs[0].shape
 
@@ -14,8 +15,8 @@ class VideoFrame:
         img_tk = ImageTk.PhotoImage(img_pil)
         return img_tk
 
-    def count(self):
-        self.idx += 1
+    def count(self, n):
+        self.idx += n
 
     def load(self, vid_path):
         imgs = []
