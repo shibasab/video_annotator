@@ -1,4 +1,5 @@
 from load_image import VideoFrame
+from label import save_label
 
 import tkinter as tk
 
@@ -8,6 +9,15 @@ class App(tk.Frame):
         super().__init__(master)
         self.master = master
         self.video_frame = video_frame
+        self.buttons = []
+        self.classes = {
+            "Address": 0,
+            "Take-back": 0,
+            "Top": 0,
+            "Tatamu": 0,
+            "Impact": 0,
+            "Follow-through": 0,
+            "Finish": 0}
         self.pack()
         self.create_widgets()
 
@@ -23,20 +33,40 @@ class App(tk.Frame):
         self.btn = tk.Button(
             self,
             text="next",
-            command=lambda: self.change_img(30))
+            command=lambda: self.change_img())
         self.btn.pack(anchor=tk.NW, side="top")
+
+        self.make_classbtn()
+
+        self.save_btn = tk.Button(
+            self, text="save", command=lambda: save_label(
+                self.video_frame.vid_path, self.classes))
+        self.save_btn.pack(anchor=tk.NW)
 
     def show_img(self):
         self.img = self.video_frame.get_tkframe()
         self.canvas.create_image(0, 0, anchor="nw", image=self.img)
 
-    def change_img(self, n=10):
-        self.video_frame.idx += n
+    def change_img(self, n=1):
+        self.video_frame.count(n)
 
         if self.video_frame.idx > len(self.video_frame.imgs):
             self.video_frame.idx = 0
 
         self.show_img()
+
+    def make_classbtn(self):
+        for k in self.classes:
+            classbtn = tk.Button(
+                self,
+                text=k,
+                command=lambda K=k: self.set_eventnum(K, self.video_frame.idx))
+            classbtn.pack()
+            self.buttons.append(classbtn)
+
+    def set_eventnum(self, k, idx):
+        self.classes[k] = idx
+        print(self.classes)
 
 
 if __name__ == "__main__":
