@@ -2,7 +2,7 @@ import cv2
 from PIL import Image, ImageTk
 
 
-class VideoFrame:
+class VideoLoader:
     def __init__(self, vid_path):
         self.idx = 0
         self.vid_path = vid_path
