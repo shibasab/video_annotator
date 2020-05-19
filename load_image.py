@@ -20,6 +20,11 @@ class VideoLoader:
         if self.idx >= len(self.imgs):
             self.idx = len(self.imgs) - 1
 
+    def back(self, n):
+        self.idx -= n
+        if self.idx < 0:
+            self.idx = 0
+
     def load(self, vid_path):
         imgs = []
 
