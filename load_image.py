@@ -17,6 +17,8 @@ class VideoFrame:
 
     def count(self, n):
         self.idx += n
+        if self.idx >= len(self.imgs):
+            self.idx = len(self.imgs) - 1
 
     def load(self, vid_path):
         imgs = []
