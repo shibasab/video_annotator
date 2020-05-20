@@ -7,7 +7,7 @@ class VideoLoader:
         self.idx = 0
         self.vid_path = vid_path
         self.imgs = self.load(vid_path)
-        self.shape = self.imgs[0].shape
+        self.shape = (self.imgs[0].shape)
 
     def get_tkframe(self):
         img = self.imgs[self.idx]
