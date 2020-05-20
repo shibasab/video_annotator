@@ -25,10 +25,18 @@ class VideoLoader:
         if self.idx < 0:
             self.idx = 0
 
+    def change(self, n):
+        if not n.isdecimal():
+            return
+
+        n = min(max(int(n), 0), len(self.imgs) - 1)
+        self.idx = n
+
     def load(self, vid_path):
         imgs = []
 
         cap = cv2.VideoCapture(vid_path)
+        self.fps = cap.get(cv2.CAP_PROP_FPS)
         if not cap.isOpened():
             print("Could not open video.")
             return
