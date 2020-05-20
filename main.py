@@ -2,6 +2,7 @@ from load_image import VideoLoader
 from label import save_label
 
 import tkinter as tk
+from tkinter import filedialog
 
 
 class ImageFrame(tk.Frame):
@@ -12,36 +13,35 @@ class ImageFrame(tk.Frame):
 
         self.canvas = tk.Canvas(
             self.master,
-            width=self.video_loader.shape[0] * 2,
-            height=self.video_loader.shape[1])
-        self.canvas.grid(row=0, column=0)
+            width=self.video_loader.shape[1],
+            height=self.video_loader.shape[0])
+        self.canvas.pack()
         self.show_img()
         self.next1 = tk.Button(
             self,
             text="next1",
             command=lambda: self.change_img(1, "next"))
+        self.next1.pack(padx=5, pady=5, side=tk.LEFT)
 
-        self.next1.grid(row=1, column=1)
         self.next5 = tk.Button(
             self,
             text="next5",
             command=lambda: self.change_img(5, "next"))
-
-        self.next5.grid(row=1, column=2)
+        self.next5.pack(padx=5, pady=5, side=tk.LEFT)
 
         self.back1 = tk.Button(
             self,
             text="back1",
             command=lambda: self.change_img(1, "back")
         )
-        self.back1.grid(row=1, column=3)
+        self.back1.pack(padx=5, pady=5, side=tk.LEFT)
 
         self.back5 = tk.Button(
             self,
             text="back5",
             command=lambda: self.change_img(5, "back")
         )
-        self.back5.grid(row=1, column=4)
+        self.back5.pack(padx=5, pady=5, side=tk.LEFT)
 
     def show_img(self):
         # self.imgの形にしないと画像がメモリに残らない
@@ -60,6 +60,22 @@ class App(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
+        self.initialdir = "./video"
+
+        self.filebtn = tk.Button(
+            self, text="ファイルを開く", command=self.load_video
+        )
+        self.filebtn.pack()
+
+    def create_widgets(self):
+        self.make_classbtn()
+
+        self.save_btn = tk.Button(
+            self, text="save", command=lambda: save_label(
+                self.video_loader.vid_path, self.classes))
+        self.save_btn.pack(padx=15, pady=10, side=tk.TOP)
+
+    def make_classbtn(self):
         self.buttons = []
         self.classes = {
             "Address": 0,
@@ -69,38 +85,43 @@ class App(tk.Frame):
             "Impact": 0,
             "Follow-through": 0,
             "Finish": 0}
-        self.video_loader = VideoLoader("./video/1.mp4")
 
-        self.video_frame = ImageFrame(self.video_loader, self)
-        self.video_frame.grid()
-        self.create_widgets()
-
-    def create_widgets(self):
-        self.make_classbtn()
-
-        self.save_btn = tk.Button(
-            self, text="save", command=lambda: save_label(
-                self.video_loader.vid_path, self.classes))
-        self.save_btn.grid(row=3, column=0, sticky=tk.W)
-
-    def make_classbtn(self):
         for i, k in enumerate(self.classes):
             classbtn = tk.Button(
                 self, text=k, command=lambda K=k: self.set_eventnum(
                     K, self.video_loader.idx))
-            classbtn.grid(row=2, column=i, padx=5)
+            classbtn.pack(padx=5, pady=10, side=tk.LEFT, expand=1)
             self.buttons.append(classbtn)
 
     def set_eventnum(self, k, idx):
         self.classes[k] = idx
         print(self.classes)
 
+    def load_video(self):
+        filetypes = [("mp4", "*.mp4")]
+        filepath = filedialog.askopenfilename(
+            filetypes=filetypes, initialdir=self.initialdir)
+
+        if filepath == "":
+            return
+
+        if self.pack_slaves() != []:
+            for i, p in enumerate(self.pack_slaves()):
+                if i == 0:
+                    continue
+                p.destroy()
+
+        self.video_loader = VideoLoader(filepath)
+
+        self.video_frame = ImageFrame(self.video_loader, self)
+        self.video_frame.pack()
+        self.create_widgets()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.resizable(width=10, height=10)
-    root.geometry("1240x720")
+    root.minsize(600, 400)
     app = App(master=root)
-    app.pack()
+    app.pack(expand=1)
 
-    app.mainloop()
+    root.mainloop()
