@@ -43,6 +43,16 @@ class ImageFrame(tk.Frame):
         )
         self.back5.pack(padx=5, pady=5, side=tk.LEFT)
 
+        self.innum = tk.Entry(self, width=5)
+        self.innum.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.spec = tk.Button(
+            self,
+            text="spec",
+            command=lambda: self.change_img(self.innum.get(), "spec")
+        )
+        self.spec.pack(padx=5, pady=5, side=tk.LEFT)
+
     def show_img(self):
         # self.imgの形にしないと画像がメモリに残らない
         self.img = self.video_loader.get_tkframe()
@@ -51,6 +61,8 @@ class ImageFrame(tk.Frame):
     def change_img(self, n=1, direction="next"):
         if direction == "next":
             self.video_loader.count(n)
+        elif direction == "spec":
+            self.video_loader.change(n)
         else:
             self.video_loader.back(n)
         self.show_img()
