@@ -86,6 +86,7 @@ class App(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
+        self.k = 1
         self.initialdir = "./video"
 
         self.filebtn = tk.Button(
@@ -148,13 +149,12 @@ class App(tk.Frame):
         height, width, _ = self.video_loader.imgs[0].shape
         fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
         # ファイル名の添え字(今後もっと良い設定方法を考える)
-        k = 84
 
         for p in places:
             writer = cv2.VideoWriter(
                 os.path.join(
                     save_dir,
-                    filename + "-{}.mp4".format(k)),
+                    filename + "-{}.mp4".format(self.k)),
                 fourcc,
                 fps,
                 (width, height))
@@ -164,7 +164,7 @@ class App(tk.Frame):
                 writer.write(frame)
 
             writer.release()
-            k += 1
+            self.k += 1
 
         self.splitplace = []
 
