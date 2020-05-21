@@ -30,6 +30,12 @@ class ImageFrame(tk.Frame):
             command=lambda: self.change_img(5, "next"))
         self.next5.pack(padx=5, pady=5, side=tk.LEFT)
 
+        self.next30 = tk.Button(
+            self,
+            text="next30",
+            command=lambda: self.change_img(30, "next"))
+        self.next30.pack(padx=5, pady=5, side=tk.LEFT)
+
         self.back1 = tk.Button(
             self,
             text="back1",
@@ -43,6 +49,13 @@ class ImageFrame(tk.Frame):
             command=lambda: self.change_img(5, "back")
         )
         self.back5.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.back30 = tk.Button(
+            self,
+            text="back30",
+            command=lambda: self.change_img(30, "back")
+        )
+        self.back30.pack(padx=5, pady=5, side=tk.LEFT)
 
         self.innum = tk.Entry(self, width=5)
         self.innum.pack(padx=5, pady=5, side=tk.LEFT)
@@ -126,33 +139,32 @@ class App(tk.Frame):
 
     def save_video(self):
         save_dir = "./video"
-        fps = self.video_loader.fps,
-        filepath = self.video_loader.vid_path,
+        fps = self.video_loader.fps
+        filepath = self.video_loader.vid_path
+        print(filepath)
         places = self.splitplace
 
         filename = os.path.splitext(filepath.split('/')[-1])[0]
         height, width, _ = self.video_loader.imgs[0].shape
         fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
-
         # ファイル名の添え字(今後もっと良い設定方法を考える)
-        i = 11
+        k = 84
 
         for p in places:
             writer = cv2.VideoWriter(
                 os.path.join(
                     save_dir,
-                    filename + "-{}.mp4".format(i)),
+                    filename + "-{}.mp4".format(k)),
                 fourcc,
                 fps,
-                (width,
-                 height))
+                (width, height))
             for i in range(p[0], p[1] + 1):
                 frame = cv2.cvtColor(
                     self.video_loader.imgs[i], cv2.COLOR_RGB2BGR)
                 writer.write(frame)
 
             writer.release()
-            i += 1
+            k += 1
 
         self.splitplace = []
 
