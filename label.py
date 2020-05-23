@@ -1,10 +1,10 @@
 import os
 
 
-def save_label(file_path, label):
-    file_name = os.path.splitext(file_path.split('/')[-1])[0]
-    with open(os.path.join("./labels", file_name + ".txt"), mode="w") as f:
-        f.write(file_path + "\n")
+def save_label(filepath, label):
+    filename, ext = os.path.splitext(filepath.split('/')[-1])
+    with open(os.path.join("./labels", filename + ".txt"), mode="w") as f:
+        f.write(filename + ext + "\n")
         for v in label.values():
             f.write(str(v) + " ")
         f.write("\n")
