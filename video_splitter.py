@@ -115,6 +115,8 @@ class App(tk.Frame):
         filepath = filedialog.askopenfilename(
             filetypes=filetypes, initialdir=self.initialdir)
 
+        self.vid_dir = filepath.split("/")[-2]
+
         if filepath == "":
             return
 
@@ -139,7 +141,7 @@ class App(tk.Frame):
         print(self.splitplace)
 
     def save_video(self):
-        save_dir = "./video"
+
         fps = self.video_loader.fps
         filepath = self.video_loader.vid_path
         print(filepath)
@@ -153,7 +155,7 @@ class App(tk.Frame):
         for p in places:
             writer = cv2.VideoWriter(
                 os.path.join(
-                    save_dir,
+                    self.vid_dir,
                     filename + "-{}.mp4".format(self.k)),
                 fourcc,
                 fps,
