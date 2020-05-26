@@ -90,12 +90,12 @@ class App(tk.Frame):
     def make_classbtn(self):
         self.buttons = []
         self.classes = {
-            "Address": 0,
+            "Stance": 0,
             "Take-back": 0,
             "Top": 0,
-            "Tatamu": 0,
+            "Fold-elbow": 0,
             "Impact": 0,
-            "Follow-through": 0,
+            "Mid-Follow-through": 0,
             "Finish": 0}
 
         for i, k in enumerate(self.classes):
