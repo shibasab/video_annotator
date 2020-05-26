@@ -31,4 +31,6 @@ if __name__ == "__main__":
     out_size = (224, 224)
 
     for vid in videos:
+        if vid == "speedup":
+            continue
         resize_video(os.path.join(vid_dir, vid), out_dir, out_size)
