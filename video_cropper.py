@@ -25,18 +25,18 @@ class ImageFrame(tk.Frame):
         self.canvas.pack()
         self.show_img()
 
-        self.next30 = tk.Button(
+        self.next20 = tk.Button(
             self,
-            text="next30",
-            command=lambda: self.change_img(30, "next"))
-        self.next30.pack(padx=5, pady=5, side=tk.LEFT)
+            text="next20",
+            command=lambda: self.change_img(20, "next"))
+        self.next20.pack(padx=5, pady=5, side=tk.LEFT)
 
-        self.back5 = tk.Button(
+        self.back20 = tk.Button(
             self,
-            text="back5",
-            command=lambda: self.change_img(5, "back")
+            text="back20",
+            command=lambda: self.change_img(20, "back")
         )
-        self.back5.pack(padx=5, pady=5, side=tk.LEFT)
+        self.back20.pack(padx=5, pady=5, side=tk.LEFT)
 
         self.leftp = tk.Button(
             self,
@@ -113,32 +113,32 @@ class ImageFrame(tk.Frame):
 
     def change_rectangle(self, direction):
         if direction == "left+":
-            self.coords[0] += 1
+            self.coords[0] += 5
             self.coords[0] = min(self.coords[0], self.coords[2] - 1)
         elif direction == "left-":
-            self.coords[0] -= 1
+            self.coords[0] -= 5
             self.coords[0] = max(self.coords[0], 0)
         if direction == "right+":
-            self.coords[2] += 1
+            self.coords[2] += 5
             self.coords[2] = min(
                 self.coords[2],
                 self.video_loader.shape[1] - 1)
         elif direction == "right-":
-            self.coords[2] -= 1
+            self.coords[2] -= 5
             self.coords[2] = max(self.coords[0] + 1, self.coords[2])
         if direction == "up+":
-            self.coords[1] += 1
+            self.coords[1] += 5
             self.coords[1] = min(self.coords[1], self.coords[3] - 1)
         elif direction == "up-":
-            self.coords[1] -= 1
+            self.coords[1] -= 5
             self.coords[1] = max(self.coords[1], 0)
         if direction == "bottom+":
-            self.coords[3] += 1
+            self.coords[3] += 5
             self.coords[3] = min(
                 self.coords[3],
                 self.video_loader.shape[0] - 1)
         elif direction == "bottom-":
-            self.coords[3] -= 1
+            self.coords[3] -= 5
             self.coords[3] = max(self.coords[3], self.coords[1] + 1)
 
         x0, y0, x1, y1 = self.coords
