@@ -113,21 +113,33 @@ class ImageFrame(tk.Frame):
 
     def change_rectangle(self, direction):
         if direction == "left+":
-            self.coords[0] += 1
+            self.coords[0] += 30
+            self.coords[0] = min(self.coords[0], self.coords[2] - 1)
         elif direction == "left-":
-            self.coords[0] -= 1
+            self.coords[0] -= 30
+            self.coords[0] = max(self.coords[0], 0)
         if direction == "right+":
-            self.coords[2] += 1
+            self.coords[2] += 30
+            self.coords[2] = min(
+                self.coords[2],
+                self.video_loader.shape[1] - 1)
         elif direction == "right-":
-            self.coords[2] -= 1
+            self.coords[2] -= 30
+            self.coords[2] = max(self.coords[0] + 1, self.coords[2])
         if direction == "up+":
-            self.coords[1] += 1
+            self.coords[1] += 30
+            self.coords[1] = min(self.coords[1], self.coords[3] - 1)
         elif direction == "up-":
-            self.coords[1] -= 1
+            self.coords[1] -= 30
+            self.coords[1] = max(self.coords[1], 0)
         if direction == "bottom+":
-            self.coords[3] += 1
+            self.coords[3] += 30
+            self.coords[3] = min(
+                self.coords[3],
+                self.video_loader.shape[0] - 1)
         elif direction == "bottom-":
-            self.coords[3] -= 1
+            self.coords[3] -= 30
+            self.coords[3] = max(self.coords[3], self.coords[1] + 1)
 
         x0, y0, x1, y1 = self.coords
         self.canvas.coords(self.rec, x0, y0, x1, y1)
