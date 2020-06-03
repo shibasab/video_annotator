@@ -11,37 +11,25 @@ class ImageFrame(tk.Frame):
         super().__init__(master)
         self.master = master
         self.video_loader = video_loader
+        height, width = self.video_loader.shape[0], self.video_loader.shape[1]
+        self.coords = [
+            width // 4,
+            height // 4,
+            width // 2 + width // 4,
+            height // 2 + height // 4]
 
         self.canvas = tk.Canvas(
             self.master,
-            width=self.video_loader.shape[1],
-            height=self.video_loader.shape[0])
+            width=width,
+            height=height)
         self.canvas.pack()
         self.show_img()
-        self.next1 = tk.Button(
-            self,
-            text="next1",
-            command=lambda: self.change_img(1, "next"))
-        self.next1.pack(padx=5, pady=5, side=tk.LEFT)
-
-        self.next5 = tk.Button(
-            self,
-            text="next5",
-            command=lambda: self.change_img(5, "next"))
-        self.next5.pack(padx=5, pady=5, side=tk.LEFT)
 
         self.next30 = tk.Button(
             self,
             text="next30",
             command=lambda: self.change_img(30, "next"))
         self.next30.pack(padx=5, pady=5, side=tk.LEFT)
-
-        self.back1 = tk.Button(
-            self,
-            text="back1",
-            command=lambda: self.change_img(1, "back")
-        )
-        self.back1.pack(padx=5, pady=5, side=tk.LEFT)
 
         self.back5 = tk.Button(
             self,
@@ -50,36 +38,104 @@ class ImageFrame(tk.Frame):
         )
         self.back5.pack(padx=5, pady=5, side=tk.LEFT)
 
-        self.back30 = tk.Button(
+        self.leftp = tk.Button(
             self,
-            text="back30",
-            command=lambda: self.change_img(30, "back")
+            text="left+",
+            command=lambda: self.change_rectangle("left+")
         )
-        self.back30.pack(padx=5, pady=5, side=tk.LEFT)
+        self.leftp.pack(padx=5, pady=5, side=tk.LEFT)
 
-        self.innum = tk.Entry(self, width=5)
-        self.innum.pack(padx=5, pady=5, side=tk.LEFT)
-
-        self.spec = tk.Button(
+        self.leftm = tk.Button(
             self,
-            text="spec",
-            command=lambda: self.change_img(self.innum.get(), "spec")
+            text="left-",
+            command=lambda: self.change_rectangle("left-")
         )
-        self.spec.pack(padx=5, pady=5, side=tk.LEFT)
+        self.leftm.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.rightp = tk.Button(
+            self,
+            text="right+",
+            command=lambda: self.change_rectangle("right+")
+        )
+        self.rightp.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.rightm = tk.Button(
+            self,
+            text="right-",
+            command=lambda: self.change_rectangle("right-")
+        )
+        self.rightm.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.upp = tk.Button(
+            self,
+            text="up+",
+            command=lambda: self.change_rectangle("up+")
+        )
+        self.upp.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.upm = tk.Button(
+            self,
+            text="up-",
+            command=lambda: self.change_rectangle("up-")
+        )
+        self.upm.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.bottomp = tk.Button(
+            self,
+            text="bottom+",
+            command=lambda: self.change_rectangle("bottom+")
+        )
+        self.bottomp.pack(padx=5, pady=5, side=tk.LEFT)
+
+        self.bottomm = tk.Button(
+            self,
+            text="bottom-",
+            command=lambda: self.change_rectangle("bottom-")
+        )
+        self.bottomm.pack(padx=5, pady=5, side=tk.LEFT)
 
     def show_img(self):
         # self.imgの形にしないと画像がメモリに残らない
         self.img = self.video_loader.get_tkframe()
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.img)
+        self.show_rectangle()
 
     def change_img(self, n=1, direction="next"):
         if direction == "next":
             self.video_loader.count(n)
-        elif direction == "spec":
-            self.video_loader.change(n)
         else:
             self.video_loader.back(n)
         self.show_img()
+
+    def show_rectangle(self):
+        x0, y0, x1, y1 = self.coords
+        self.rec = self.canvas.create_rectangle(
+            x0,
+            y0,
+            x1,
+            y1,
+            outline="blue")
+
+    def change_rectangle(self, direction):
+        if direction == "left+":
+            self.coords[0] += 1
+        elif direction == "left-":
+            self.coords[0] -= 1
+        if direction == "right+":
+            self.coords[2] += 1
+        elif direction == "right-":
+            self.coords[2] -= 1
+        if direction == "up+":
+            self.coords[1] += 1
+        elif direction == "up-":
+            self.coords[1] -= 1
+        if direction == "bottom+":
+            self.coords[3] += 1
+        elif direction == "bottom-":
+            self.coords[3] -= 1
+
+        x0, y0, x1, y1 = self.coords
+        self.canvas.coords(self.rec, x0, y0, x1, y1)
 
 
 class App(tk.Frame):
@@ -124,14 +180,6 @@ class App(tk.Frame):
         self.video_frame = ImageFrame(self.video_loader, self)
         self.video_frame.pack()
         self.create_widgets()
-
-    def set_splitplace(self, t):
-        idx = self.video_loader.idx
-        if t == "start":
-            self.splitplace.append([idx, idx])
-        else:
-            self.splitplace[-1][1] = idx
-        print(self.splitplace)
 
     def save_video(self):
 
