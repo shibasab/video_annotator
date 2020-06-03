@@ -113,32 +113,32 @@ class ImageFrame(tk.Frame):
 
     def change_rectangle(self, direction):
         if direction == "left+":
-            self.coords[0] += 30
+            self.coords[0] += 1
             self.coords[0] = min(self.coords[0], self.coords[2] - 1)
         elif direction == "left-":
-            self.coords[0] -= 30
+            self.coords[0] -= 1
             self.coords[0] = max(self.coords[0], 0)
         if direction == "right+":
-            self.coords[2] += 30
+            self.coords[2] += 1
             self.coords[2] = min(
                 self.coords[2],
                 self.video_loader.shape[1] - 1)
         elif direction == "right-":
-            self.coords[2] -= 30
+            self.coords[2] -= 1
             self.coords[2] = max(self.coords[0] + 1, self.coords[2])
         if direction == "up+":
-            self.coords[1] += 30
+            self.coords[1] += 1
             self.coords[1] = min(self.coords[1], self.coords[3] - 1)
         elif direction == "up-":
-            self.coords[1] -= 30
+            self.coords[1] -= 1
             self.coords[1] = max(self.coords[1], 0)
         if direction == "bottom+":
-            self.coords[3] += 30
+            self.coords[3] += 1
             self.coords[3] = min(
                 self.coords[3],
                 self.video_loader.shape[0] - 1)
         elif direction == "bottom-":
-            self.coords[3] -= 30
+            self.coords[3] -= 1
             self.coords[3] = max(self.coords[3], self.coords[1] + 1)
 
         x0, y0, x1, y1 = self.coords
@@ -149,7 +149,6 @@ class App(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
-        self.k = 1
         self.initialdir = "./video"
 
         self.filebtn = tk.Button(
@@ -193,30 +192,29 @@ class App(tk.Frame):
         fps = self.video_loader.fps
         filepath = self.video_loader.vid_path
         print(filepath)
-        places = self.splitplace
 
+        x0, y0, x1, y1 = self.video_frame.coords
         filename = os.path.splitext(filepath.split('/')[-1])[0]
-        height, width, _ = self.video_loader.imgs[0].shape
+        height = y1 - y0
+        width = x1 - x0
         fourcc = cv2.VideoWriter_fourcc("m", "p", "4", "v")
         # ファイル名の添え字(今後もっと良い設定方法を考える)
 
-        for p in places:
-            writer = cv2.VideoWriter(
-                os.path.join(
-                    self.vid_dir,
-                    filename + "-{}.mp4".format(self.k)),
-                fourcc,
-                fps,
-                (width, height))
-            for i in range(p[0], p[1] + 1):
-                frame = cv2.cvtColor(
-                    self.video_loader.imgs[i], cv2.COLOR_RGB2BGR)
-                writer.write(frame)
+        writer = cv2.VideoWriter(
+            os.path.join(
+                self.vid_dir,
+                "cropped-" + filename + ".mp4"),
+            fourcc,
+            fps,
+            (width, height))
+        for i in range(len(self.video_loader.imgs)):
+            frame = cv2.cvtColor(
+                self.video_loader.imgs[i], cv2.COLOR_RGB2BGR)
+            frame = frame[y0: y1,
+                          x0: x1, :]
+            writer.write(frame)
 
-            writer.release()
-            self.k += 1
-
-        self.splitplace = []
+        writer.release()
 
 
 if __name__ == "__main__":
