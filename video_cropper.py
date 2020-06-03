@@ -109,12 +109,7 @@ class ImageFrame(tk.Frame):
 
     def show_rectangle(self):
         x0, y0, x1, y1 = self.coords
-        self.rec = self.canvas.create_rectangle(
-            x0,
-            y0,
-            x1,
-            y1,
-            outline="blue")
+        self.rec = self.canvas.create_rectangle(x0, y0, x1, y1, outline="blue")
 
     def change_rectangle(self, direction):
         if direction == "left+":
