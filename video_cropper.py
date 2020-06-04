@@ -1,3 +1,7 @@
+"""
+    動画フレームごとを見ながら切り取る領域を指定し、クロップする
+"""
+
 from load_image import VideoLoader
 import os
 
@@ -7,6 +11,17 @@ from tkinter import filedialog
 
 
 class ImageFrame(tk.Frame):
+    """
+    動画中のフレームの保持、表示、変更を行う
+
+    Attributes
+    ----------
+    video_loader : VideoLoader
+        動画フレームを保持
+    coords : array
+        動画から切り出す領域の左上,右下の座標を保持
+    """
+
     def __init__(self, video_loader, master=None):
         super().__init__(master)
         self.master = master
@@ -95,12 +110,24 @@ class ImageFrame(tk.Frame):
         self.bottomm.pack(padx=5, pady=5, side=tk.LEFT)
 
     def show_img(self):
+        """
+        動画フレーム、クロップする領域を表示
+        """
         # self.imgの形にしないと画像がメモリに残らない
         self.img = self.video_loader.get_tkframe()
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self.img)
         self.show_rectangle()
 
     def change_img(self, n=1, direction="next"):
+        """
+        表示するフレームを変更
+
+        Args:
+            n : int
+                変更する枚数。 デフォルトは1
+            direction : str
+                nextかbackが入る。デフォルトは"next"
+        """
         if direction == "next":
             self.video_loader.count(n)
         else:
@@ -108,10 +135,22 @@ class ImageFrame(tk.Frame):
         self.show_img()
 
     def show_rectangle(self):
+        """
+        クロップする領域を表示
+        """
+
         x0, y0, x1, y1 = self.coords
         self.rec = self.canvas.create_rectangle(x0, y0, x1, y1, outline="blue")
 
     def change_rectangle(self, direction):
+        """
+        クロップする領域を変更する
+
+        Args:
+            direction : str
+                変更する辺と方向
+        """
+
         if direction == "left+":
             self.coords[0] += 5
             self.coords[0] = min(self.coords[0], self.coords[2] - 1)
@@ -164,8 +203,7 @@ class App(tk.Frame):
         self.split_btn.pack(padx=15, pady=10, side=tk.TOP)
 
     def load_video(self):
-        self.k = 1
-        self.splitplace = []
+
         filetypes = [("mp4", "*.mp4")]
         filepath = filedialog.askopenfilename(
             filetypes=filetypes, initialdir=self.initialdir)
