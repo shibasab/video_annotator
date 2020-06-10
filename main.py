@@ -84,7 +84,8 @@ class App(tk.Frame):
 
         self.save_btn = tk.Button(
             self, text="save", command=lambda: save_label(
-                self.video_loader.vid_path, self.classes))
+                self.video_loader.vid_path, self.classes, len(
+                    self.video_loader.imgs)))
         self.save_btn.pack(padx=15, pady=10, side=tk.TOP)
 
     def make_classbtn(self):
